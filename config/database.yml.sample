@@ -1,0 +1,19 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 32
+  host: <%= ENV.fetch("MYSQL_HOST") { "localhost" } %>
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV['MYSQL_PASSWORD'] %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("MYSQL_DATABASE") { "api_ubs_development" } %>
+
+test:
+  <<: *default
+  database: <%= ENV.fetch("MYSQL_DATABASE") { "api_ubs_test" } %>
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("MYSQL_DATABASE") { "api_ubs_production" } %>

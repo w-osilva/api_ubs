@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis
+    volumes:
+      - ${STORAGE}/redis:/data
+    networks:
+      - internal
+
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_DATABASE: ${SERVICE}_${RAILS_ENV}
+      MYSQL_USER: ${SERVICE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${STORAGE}/mariadb:/var/lib/mysql
+    networks:
+      - internal
+
+  api_ubs: &ror
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RAILS_ENV: ${RAILS_ENV}
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      RAILS_ENV: ${RAILS_ENV}
+      RAILS_LOG_TO_STDOUT: 'yes'
+      REDIS_HOST: redis
+      MYSQL_HOST: mariadb
+      MYSQL_DATABASE: ${SERVICE}_${RAILS_ENV}
+      MYSQL_USER: ${SERVICE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - internal
+
+  sidekiq:
+    <<: *ror
+    command: bin/bundle exec sidekiq -C config/sidekiq.yml -e ${RAILS_ENV}
+    networks:
+      - internal
+
+networks:
+  internal:
+    name: ${SERVICE}

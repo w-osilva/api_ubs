@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  api_ubs: &ror
+    image: ${SERVICE}:${RELEASE}
+#    image: ${DTR}/${SERVICE}:${RELEASE}
+    deploy:
+      replicas: ${REPLICAS}
+
+  sidekiq:
+    <<: *ror
+    deploy:
+      replicas: 1

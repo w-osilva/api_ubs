@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  api_ubs: &ror
+    image: ${SERVICE}:${RELEASE}
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:3000
+
+  sidekiq:
+    <<: *ror
+    ports: []

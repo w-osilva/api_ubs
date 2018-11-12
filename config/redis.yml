@@ -1,0 +1,15 @@
+default: &default
+  adapter: redis_cache_store
+  driver: hiredis
+  expires_in: 1.hour
+  url: redis://<%= ENV.fetch("REDIS_HOST") { "localhost" } %>:6379
+  namespace: api_ubs
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

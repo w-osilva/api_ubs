@@ -1,0 +1,13 @@
+default: &default
+  adapter: redis
+  url: redis://<%= ENV.fetch("REDIS_HOST") { "localhost" } %>:6379
+  channel_prefix: api_ubs
+
+development:
+  <<: *default
+
+test:
+  adapter: async
+
+production:
+  <<: *default
