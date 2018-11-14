@@ -1,6 +1,5 @@
 class Adapters::Ubs
-
-  # data: {
+  # arg data {
   #   :vlr_latitude=>"-10.9112370014188",
   #   :vlr_longitude=>"-37.0620775222768",
   #   :cod_munic=>"280030",
@@ -17,22 +16,21 @@ class Adapters::Ubs
   # }
   def self.from_csv(data)
     data.deep_symbolize_keys!
-
     {
       name: data[:nom_estab],
       address: data[:dsc_endereco],
       city: data[:dsc_cidade],
       phone: data[:dsc_telefone],
-      geocode: {
-        lat: data[:vlr_latitude].to_f,
-        long: data[:vlr_longitude].to_f
-      },
-      score: {
-        size: Score.parse_score(data[:dsc_estrut_fisic_ambiencia]),
-        adaptation_for_seniors: Score.parse_score(data[:dsc_adap_defic_fisic_idosos]),
-        medical_equipment: Score.parse_score(data[:dsc_equipamentos]),
-        medicine: Score.parse_score(data[:dsc_medicamentos])
-      }
+      geocode: ::Adapters::Geocode.from_csv(data.slice(
+        :vlr_latitude,
+        :vlr_longitude
+      )),
+      scores: ::Adapters::Score.from_csv(data.slice(
+        :dsc_estrut_fisic_ambiencia,
+        :dsc_adap_defic_fisic_idosos,
+        :dsc_equipamentos,
+        :dsc_medicamentos
+      ))
     }
   end
 

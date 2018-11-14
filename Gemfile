@@ -12,13 +12,15 @@ gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'faraday'
+gem 'enumerize'
+gem 'oj'
+gem 'kaminari'
+gem 'searchkick'
+gem 'typhoeus'
 
-# redis
 gem 'redis', '~> 4.0'
 gem 'redis-namespace'
 gem 'hiredis'
-
-# jobs
 gem 'sidekiq'
 
 gem 'bootsnap', '>= 1.1.0', require: false

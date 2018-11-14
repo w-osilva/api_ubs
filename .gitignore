@@ -34,3 +34,4 @@
 .idea/*
 docker/storage/mariadb/*
 docker/storage/redis/*
+docker/storage/elasticsearch/*

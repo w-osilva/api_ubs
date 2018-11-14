@@ -26,43 +26,32 @@ fi
 case "${1}" in
   "build")
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
-    docker-compose -f docker-compose.yml ${COMPOSE_ENV} build ${2}
+    docker-compose -f docker-compose.yml ${COMPOSE_ENV} build
 #    docker-compose -f docker-compose.yml ${COMPOSE_ENV} push
     ;;
 
   "up"|"start")
-#    [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="--compose-file docker-compose.${ENV}.yml"
-#    env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml ${COMPOSE_ENV} ${SERVICE}
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
     env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} up -d
 
-    source docker/storage/privileges.sh
+    source docker/scripts/privileges.sh
     retry setPrivileges
     ;;
 
   "stop")
-#    docker stack rm ${SERVICE}
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
     env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} stop
     ;;
 
-#  "restart")
-#    [[ -z "$2" ]] && interval="10s" || interval="$2"
-#    docker service update --update-parallelism 1 --force --update-delay ${interval} ${SERVICE}_${SERVICE}
-#    ;;
-
   "log")
-#    docker service logs --tail=80 ${SERVICE}_${SERVICE}
-    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=80 ${2}
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=80
     ;;
 
   "logs")
-#    docker service logs --tail=200 -f ${SERVICE}_${SERVICE}
-    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=500 -f ${2}
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=500 -f
     ;;
 
   "bash")
-#    docker container exec -it $(docker ps | grep ${SERVICE}_${SERVICE} | awk '{print $1}') bash
     env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} exec ${SERVICE} bash -l
     ;;
   *)

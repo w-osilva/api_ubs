@@ -82,5 +82,14 @@ module ApiUbs
     rescue => e
       puts "WARNING --: Action Cable has not been set up"
     end
+
+    # Elasticsearch
+    #---------------------------------------------------------------
+    begin
+      $elasticsearch_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/elasticsearch.yml').to_s)).result)[Rails.env]
+      ENV["ELASTICSEARCH_URL"] ||= $elasticsearch_conf[:url]
+    rescue => e
+      puts "WARNING --: Elasticsearch has not been set up"
+    end
   end
 end

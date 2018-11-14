@@ -76,13 +76,26 @@ GEM
     concurrent-ruby (1.1.3)
     connection_pool (2.2.2)
     crass (1.0.4)
+    elasticsearch (6.1.0)
+      elasticsearch-api (= 6.1.0)
+      elasticsearch-transport (= 6.1.0)
+    elasticsearch-api (6.1.0)
+      multi_json
+    elasticsearch-transport (6.1.0)
+      faraday
+      multi_json
+    enumerize (2.2.2)
+      activesupport (>= 3.2)
     erubi (1.7.1)
+    ethon (0.11.0)
+      ffi (>= 1.3.0)
     execjs (2.7.0)
     faraday (0.15.3)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    hashie (3.5.7)
     hiredis (0.6.1)
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
@@ -90,6 +103,18 @@ GEM
     jbuilder (2.8.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
+    kaminari (1.1.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.1.1)
+      kaminari-activerecord (= 1.1.1)
+      kaminari-core (= 1.1.1)
+    kaminari-actionview (1.1.1)
+      actionview
+      kaminari-core (= 1.1.1)
+    kaminari-activerecord (1.1.1)
+      activerecord
+      kaminari-core (= 1.1.1)
+    kaminari-core (1.1.1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -113,6 +138,7 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
+    oj (3.6.10)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -170,6 +196,10 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    searchkick (3.1.1)
+      activemodel (>= 4.2)
+      elasticsearch (>= 5)
+      hashie
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
@@ -177,7 +207,6 @@ GEM
       connection_pool (~> 2.2, >= 2.2.2)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
-    smarter_csv (1.2.5)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -196,6 +225,8 @@ GEM
     turbolinks (5.2.0)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
+    typhoeus (1.3.1)
+      ethon (>= 0.9.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (4.1.19)
@@ -220,23 +251,27 @@ DEPENDENCIES
   capybara (>= 2.15)
   chromedriver-helper
   coffee-rails (~> 4.2)
+  enumerize
   faraday
   hiredis
   jbuilder (~> 2.5)
+  kaminari
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.3.13, < 0.5)
+  oj
   pry-rails
   puma (~> 3.11)
   rails (~> 5.2.1)
   redis (~> 4.0)
   redis-namespace
   sass-rails (~> 5.0)
+  searchkick
   selenium-webdriver
   sidekiq
-  smarter_csv
   spring
   spring-watcher-listen (~> 2.0.0)
   turbolinks (~> 5)
+  typhoeus
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
