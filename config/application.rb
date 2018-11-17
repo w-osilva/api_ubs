@@ -61,6 +61,5 @@ module ApiUbs
     # Elasticsearch
     #---------------------------------------------------------------
     $elasticsearch_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/elasticsearch.yml').to_s)).result)[Rails.env]
-    ENV["ELASTICSEARCH_URL"] ||= $elasticsearch_conf[:url]
   end
 end

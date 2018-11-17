@@ -32,6 +32,10 @@
 
 .DS_Store
 .idea/*
+
+# docker
+!docker/**/.keep
+docker/tmp/*
 docker/storage/mariadb/*
 docker/storage/redis/*
 docker/storage/elasticsearch/*

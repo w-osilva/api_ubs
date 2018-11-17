@@ -17,14 +17,19 @@ wait_for mariadb 3306
 #echo "Waiting for Redis to start..."
 wait_for redis 6379
 
+#echo "Waiting for Elasticsearch to start..."
+wait_for elasticsearch 9200
+
 # Initialize database
 echo "Executing db:create:"
-rake db:exists || rake db:setup
-/app/bin/rails db:create
+rake db:create
 echo "Executing db:migrate:"
 /app/bin/rails db:migrate
 echo "Executing db:seed:"
 /app/bin/rails db:seed
+
+echo "Creating elasticsearch index"
+rake elasticsearch:create_index
 
 # Remove pids
 /bin/rm -f /app/tmp/pids/server.pid \

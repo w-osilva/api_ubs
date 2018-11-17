@@ -9,11 +9,12 @@ services:
       - internal
 
   elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
-      ports:
-        - 9200:9200
-      volumes:
-        - "./data${STORAGE}/elasticsearch:/usr/share/elasticsearch/data
+    hostname: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    volumes:
+      - ${STORAGE}/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - internal
 
   mariadb:
     image: mariadb
@@ -42,6 +43,7 @@ services:
       RAILS_LOG_TO_STDOUT: 'yes'
       REDIS_HOST: redis
       ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_URL: http://elasticsearch:9200
       MYSQL_HOST: mariadb
       MYSQL_DATABASE: ${SERVICE}_${RAILS_ENV}
       MYSQL_USER: ${SERVICE}

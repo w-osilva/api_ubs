@@ -3,6 +3,6 @@
     - [critical, 3]
     - [default, 2]
     - [low, 1]
-    - [elasticsearch, 2]
+    - [elasticsearch, 3]
 production:
   :concurrency: 30

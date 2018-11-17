@@ -2,20 +2,9 @@
 
 source .env
 
-if [ -z "$MYSQL_USER" ]; then
-  export MYSQL_USER="$(bin/rails credentials:show | grep mysql_user | awk '{print $2}')"
-fi
-if [ -z "$MYSQL_PASSWORD" ]; then
-  export MYSQL_PASSWORD="$(bin/rails credentials:show | grep mysql_password | awk '{print $2}')"
-fi
-if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
-  export MYSQL_ROOT_PASSWORD="$(bin/rails credentials:show | grep mysql_root_password | awk '{print $2}')"
-fi
 if [ -z "$RELEASE" ]; then
   export RELEASE=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-matc)
 fi
-
-source .env
 
 # If $PROJECT not defined in .env, exit
 if [ -z "${SERVICE}" ] || [ -z "${RELEASE}" ]; then
@@ -23,10 +12,14 @@ if [ -z "${SERVICE}" ] || [ -z "${RELEASE}" ]; then
   exit -1
 fi
 
+# Mysql
+source docker/scripts/credentials.sh
+
+# control
 case "${1}" in
   "build")
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
-    docker-compose -f docker-compose.yml ${COMPOSE_ENV} build
+    docker-compose -f docker-compose.yml ${COMPOSE_ENV} build ${2}
 #    docker-compose -f docker-compose.yml ${COMPOSE_ENV} push
     ;;
 
@@ -44,11 +37,11 @@ case "${1}" in
     ;;
 
   "log")
-    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=80
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=80 ${2}
     ;;
 
   "logs")
-    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=500 -f
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose logs --tail=500 -f ${2}
     ;;
 
   "bash")
