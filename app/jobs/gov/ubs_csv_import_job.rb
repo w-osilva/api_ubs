@@ -1,4 +1,5 @@
 require 'csv'
+require_relative 'ubs_import_job'
 class Gov::UbsCsvImportJob < ApplicationJob
   queue_as :critical
 
