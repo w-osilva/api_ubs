@@ -11,33 +11,36 @@ class Ubs < ApplicationRecord
   include Elasticsearch::Model
 
   after_commit on: [:create] do
-    IndexerJob.perform_later(self.class.name, :index, self.id)
+    Gov::UbsIndexerJob.perform_later('index', self.id)
   end
   after_commit on: [:update] do
-    IndexerJob.perform_later(self.class.name, :update, self.id)
+    Gov::UbsIndexerJob.perform_later('update', self.id)
   end
   after_commit on: [:destroy] do
     __elasticsearch__.delete_document
   end
 
   def as_indexed_json(options = {})
-    {
-      id: id,
-      name: name,
-      address: address,
-      city: city,
-      phone: phone,
-      geocode:{
-        lat: geocode[:lat].to_f,
-        long: geocode[:long].to_f,
-      },
-      scores:{
-        size: scores[:size].value,
-        adaptation_for_seniors: scores[:adaptation_for_seniors].value,
-        medical_equipment: scores[:medical_equipment].value,
-        medicine: scores[:medicine].value,
+    self.as_json(
+      only: [:id, :name, :city, :phone],
+      include: {
+        geocode: {
+          only: [:lat, :long]
+        }
       }
-    }
+    ).merge(scores:{
+      size: scores[:size].value,
+      adaptation_for_seniors: scores[:adaptation_for_seniors].value,
+      medical_equipment: scores[:medical_equipment].value,
+      medicine: scores[:medicine].value,
+    })
+  end
+
+  def self.parse_indexed_json(result)
+    result = result._source.deep_symbolize_keys
+    result[:geocode][:lat] = result[:geocode][:lat].to_f
+    result[:geocode][:long] = result[:geocode][:long].to_f
+    result
   end
 
 end

@@ -16,7 +16,7 @@ class Gov::UbsCsvImportJob < ApplicationJob
     CSV.foreach(file, headers: true) do |row|
       data = ::Adapters::Ubs.from_csv(row.to_hash)
       unless ::Ubs.exists?(data.except(:scores, :geocode, :phone))
-        Gov::UbsImportJob.perform_later(data)
+        ::Gov::UbsImportJob.perform_later(data)
       end
     end
   end

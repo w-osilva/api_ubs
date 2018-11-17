@@ -13,8 +13,8 @@
 ActiveRecord::Schema.define(version: 2018_11_13_193927) do
 
   create_table "geocodes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.decimal "lat", precision: 15, scale: 13
-    t.decimal "long", precision: 15, scale: 13
+    t.decimal "lat", precision: 15, scale: 11
+    t.decimal "long", precision: 15, scale: 11
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lat", "long"], name: "index_geocodes_on_lat_and_long"

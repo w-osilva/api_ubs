@@ -9,16 +9,15 @@ class Api::V1::UbsController < ApplicationController
       query: {
         multi_match: {
           query: query,
-          fields: ['name', 'address', 'city', 'phone', 'geocode.lat', 'geocode.long']
+          fields: ['name', 'address', 'city', 'phone', 'geocode.lat', 'geocode.long'],
         }
-      }
-    )
+      })
 
     pagination = {
       current_page: page,
       per_page: per_page,
       total_records: resp.results.total,
-      entries: resp.page(page).per(per_page).results.map{|res| res._source }
+      entries: resp.page(page).per(per_page).results.map{|res| Ubs.parse_indexed_json(res) }
     }
 
     render json: pagination, status: :ok
