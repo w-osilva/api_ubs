@@ -5,6 +5,7 @@ require 'rails/all'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+require 'elasticsearch/rails/instrumentation'
 
 module ApiUbs
   class Application < Rails::Application
@@ -34,62 +35,32 @@ module ApiUbs
     # Redis
     #---------------------------------------------------------------
     $redis_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/redis.yml').to_s)).result)[Rails.env]
+    adapter = $redis_conf["adapter"].to_sym
+    driver = $redis_conf["driver"].to_sym
+    expires_in = $redis_conf["expires_in"].split(".")
 
-    begin
-      adapter = $redis_conf["adapter"].to_sym
-      driver = $redis_conf["driver"].to_sym
-      expires_in = $redis_conf["expires_in"].split(".")
+    redis_options = { url: $redis_conf["url"], namespace: $redis_conf["namespace"] }
+    redis_options[:expires_in] = (expires_in[0].to_i.send(expires_in[1]) )
+    redis_options[:driver] = driver if driver.present?
 
-      redis_options = { url: $redis_conf["url"], namespace: $redis_conf["namespace"] }
-      redis_options[:expires_in] = (expires_in[0].to_i.send(expires_in[1]) )
-      redis_options[:driver] = driver if driver.present?
-
-      config.action_controller.perform_caching = true
-      config.cache_store = adapter, redis_options
-    rescue => e
-      puts "WARNING --: Redis has not been set up"
-
-      if Rails.env.development?
-        if Rails.root.join('tmp', 'caching-dev.txt').exist?
-          config.action_controller.perform_caching = true
-          config.cache_store = :memory_store
-          config.public_file_server.headers = {
-            'Cache-Control' => "public, max-age=#{2.days.to_i}"
-          }
-        else
-          config.action_controller.perform_caching = false
-          config.cache_store = :null_store
-        end
-      end
-    end
+    config.action_controller.perform_caching = true
+    config.cache_store = adapter, redis_options
 
     # Sidekiq
     #---------------------------------------------------------------
-    begin
-      config.active_job.queue_adapter = :sidekiq
-      Sidekiq.configure_server {|config| config.redis = { url: $redis_conf["url"], namespace: $redis_conf["namespace"]} }
-      Sidekiq.configure_client {|config| config.redis = { url: $redis_conf["url"], namespace: $redis_conf["namespace"]} }
-    rescue => e
-      puts "WARNING --: Sidekiq has not been set up"
-    end
+    config.active_job.queue_adapter = :sidekiq
+    Sidekiq.configure_server {|config| config.redis = { url: $redis_conf["url"], namespace: $redis_conf["namespace"]} }
+    Sidekiq.configure_client {|config| config.redis = { url: $redis_conf["url"], namespace: $redis_conf["namespace"]} }
 
     # Action Cable
     #---------------------------------------------------------------
-    begin
-      config.action_cable.mount_path = '/cable'
-      config.action_cable.url = '/cable'
-      config.action_cable.allowed_request_origins = [ /http:\/\/localhost.*/ ]
-    rescue => e
-      puts "WARNING --: Action Cable has not been set up"
-    end
+    config.action_cable.mount_path = '/cable'
+    config.action_cable.url = '/cable'
+    config.action_cable.allowed_request_origins = [ /http:\/\/localhost.*/ ]
 
     # Elasticsearch
     #---------------------------------------------------------------
-    begin
-      $elasticsearch_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/elasticsearch.yml').to_s)).result)[Rails.env]
-      ENV["ELASTICSEARCH_URL"] ||= $elasticsearch_conf[:url]
-    rescue => e
-      puts "WARNING --: Elasticsearch has not been set up"
-    end
+    $elasticsearch_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/elasticsearch.yml').to_s)).result)[Rails.env]
+    ENV["ELASTICSEARCH_URL"] ||= $elasticsearch_conf[:url]
   end
 end
