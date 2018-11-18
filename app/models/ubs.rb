@@ -7,11 +7,11 @@ class Ubs < ApplicationRecord
   serialize :scores, Hash
 
   def geocode=(geocode)
-    self[:geocode] = geocode.deep_symbolize_keys rescue {}
+    self[:geocode] = (geocode.deep_symbolize_keys rescue {})
   end
 
   def scores=(scores)
-    self[:scores] = scores.deep_symbolize_keys rescue {}
+    self[:scores] = (scores.deep_symbolize_keys rescue {})
   end
 
   # ElasticSearch
@@ -22,7 +22,18 @@ class Ubs < ApplicationRecord
   def as_indexed_json(options = {})
     self.as_json(
       only: [:id, :name, :city, :phone]
-    ).merge(geocode: geocode, scores: scores)
+    ).merge(
+      geocode: {
+        lat: geocode[:lat].to_s,
+        long: geocode[:long].to_s,
+      },
+      scores: {
+        size: scores[:size].to_s,
+        adaptation_for_seniors: scores[:adaptation_for_seniors].to_s,
+        medical_equipment: scores[:medical_equipment].to_s,
+        medicine: scores[:medicine].to_s,
+      }
+    )
   end
 
   def self.parse_indexed_json(result)

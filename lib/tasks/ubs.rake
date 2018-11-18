@@ -9,7 +9,7 @@ namespace :ubs do
   end
 
   desc "Import UBS from CSV (in batch)"
-  task :csv_import_batch, [in_background: false] => :environment do |_task, args|
+  task :csv_import_batch, [:in_background] => :environment do |_task, args|
     puts "Importing UBS from CSV (in batch)"
 
     method = args[:in_background] ? :perform_later : :perform_now
