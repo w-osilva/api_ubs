@@ -10,12 +10,11 @@ class Gov::UbsImportJob < ApplicationJob
 
   def perform(data)
     ActiveRecord::Base.connection_pool.with_connection do
-      ActiveRecord::Base.transaction do
-        ubs = ::Ubs.new(data.except(:scores, :geocode))
-        ubs.geocode = ::Geocode.find_or_initialize_by(**data[:geocode])
-        ubs.scores = ::Score.new(**data[:scores])
-        ubs.save!
-      end
+      ubs = ::Ubs.find_or_initialize_by(data.except(:scores, :geocode, :phone))
+      ubs.phone = data[:phone]
+      ubs.geocode = data[:geocode]
+      ubs.scores = data[:scores]
+      ubs.save! if ubs.changed?
     end
   end
 

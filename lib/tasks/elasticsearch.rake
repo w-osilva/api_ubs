@@ -3,9 +3,9 @@ require 'elasticsearch/rails/tasks/import'
 
 namespace :elasticsearch do
 
-  desc "Create Indexes"
+  desc "Create index in Elasticsearch"
   task create_index: :environment do |_task|
-    Ubs.__elasticsearch__.create_index!
+    Ubs.__elasticsearch__.create_index! force: true
   end
 
 end

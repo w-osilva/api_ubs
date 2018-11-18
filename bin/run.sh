@@ -28,9 +28,6 @@ echo "Executing db:migrate:"
 echo "Executing db:seed:"
 /app/bin/rails db:seed
 
-echo "Creating elasticsearch index"
-rake elasticsearch:create_index
-
 # Remove pids
 /bin/rm -f /app/tmp/pids/server.pid \
            /app/tmp/pids/puma.pid

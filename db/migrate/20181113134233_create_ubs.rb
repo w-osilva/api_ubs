@@ -5,9 +5,13 @@ class CreateUbs < ActiveRecord::Migration[5.2]
       t.string :address
       t.string :city
       t.string :phone
-      t.references :geocode, foreign_key: true
+      t.text :scores
+      t.text :geocode
 
       t.timestamps
     end
+    add_index :ubs, :scores, type: :fulltext
+    add_index :ubs, :geocode, type: :fulltext
+    add_index :ubs, [:name, :address, :city], unique: true
   end
 end

@@ -5,3 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+if Ubs.count == 0
+  `rake elasticsearch:create_index`
+  `rake ubs:csv_import_batch[in_background]`
+end
