@@ -34,8 +34,9 @@
 .idea/*
 
 # docker
-!docker/**/.keep
 docker/tmp/*
 docker/storage/mariadb/*
 docker/storage/redis/*
 docker/storage/elasticsearch/*
+!docker/**/.keep
+!docker/storage/**/.keep
