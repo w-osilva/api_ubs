@@ -1,24 +1,14 @@
-# README
+# API UBS
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Build with
 
-Things you may want to cover:
+* Ruby 2.5.1
+* Rails 5.2
+  
+## Instructions
+* Read these [instructions](Setup.local.md) to configure the project in your environment.
+* Read these [instructions](Setup.docker.md) to run in docker. 
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Documentation
+* [API](documentation/api.md)
+* [CSV Import](documentation/csv_import.md)
