@@ -68,6 +68,15 @@ module ApiUbs
 
     # Elasticsearch
     #---------------------------------------------------------------
-    $elasticsearch_conf = YAML.load(ERB.new(File.read(Rails.root.join('config/elasticsearch.yml').to_s)).result)[Rails.env]
+    # Moved to initializers/elasticsearch.rb
+
+    # CORS
+    #---------------------------------------------------------------
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', headers: :any, methods: [:get, :post, :options]
+      end
+    end
   end
 end

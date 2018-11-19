@@ -23,6 +23,7 @@ gem 'redis', '~> 4.0'
 gem 'redis-namespace'
 gem 'hiredis'
 gem 'sidekiq'
+gem 'rack-cors', require: 'rack/cors'
 
 gem 'bootsnap', '>= 1.1.0', require: false
 
