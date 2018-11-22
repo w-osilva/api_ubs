@@ -1,26 +1,11 @@
 class Api::V1::UbsController < ApplicationController
-
-  def find
-    query = params[:query]
-    page = params[:page] || 1
-    per_page = params[:per_page] || 10
-
-    resp = Ubs.__elasticsearch__.search(
-      query: {
-        multi_match: {
-          query: query,
-          fields: ['name', 'address', 'city', 'phone', 'geocode.lat', 'geocode.long'],
-        }
-      })
-
-    pagination = {
-      current_page: page,
-      per_page: per_page,
-      total_records: resp.results.total,
-      entries: resp.page(page).per(per_page).results.map{|res| Ubs.parse_indexed_json(res) }
-    }
-
-    render json: pagination, status: :ok
+  def find_ubs
+    search = Ubs.search_ubs_paginated(**find_params.to_hash.symbolize_keys)
+    render json: search, status: :ok
   end
 
+  private
+  def find_params
+    params.permit(:query, :page, :per_page)
+  end
 end

@@ -21,12 +21,15 @@ wait_for redis 6379
 wait_for elasticsearch 9200
 
 # Initialize database
-echo "Executing db:create:"
-rake db:create
-echo "Executing db:migrate:"
+echo "Executing rake db:create"
+/app/bin/rails db:create
+echo "Executing rake db:migrate"
 /app/bin/rails db:migrate
-echo "Executing db:seed:"
+echo "Executing rake db:seed"
 /app/bin/rails db:seed
+
+echo "Executing rake ubs:csv_first_import"
+/app/bin/rails ubs:csv_first_import
 
 # Remove pids
 /bin/rm -f /app/tmp/pids/server.pid \

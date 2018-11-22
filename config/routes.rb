@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      get 'find_ubs' => 'ubs#find'
+      get 'find_ubs' => 'ubs#find_ubs'
     end
   end
 end

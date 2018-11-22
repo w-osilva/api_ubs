@@ -13,10 +13,10 @@ FactoryBot.define do
     }
     scores {
       {
-        size: [1..3].sample,
-        adaptation_for_seniors: [1..3].sample,
-        medical_equipment: [1..3].sample,
-        medicine: [1..3].sample
+        size: (1..3).to_a.sample,
+        adaptation_for_seniors: (1..3).to_a.sample,
+        medical_equipment: (1..3).to_a.sample,
+        medicine: (1..3).to_a.sample,
       }
     }
   end

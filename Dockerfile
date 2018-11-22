@@ -25,13 +25,13 @@ ADD . /app
 RUN [ -f config/database.yml ] || /bin/cp -f config/database.yml.sample config/database.yml
 
 # Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
- && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
- && apt-get update -qq \
- && apt-get install -y yarn
+#RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+# && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+# && apt-get update -qq \
+# && apt-get install -y yarn
 
 # Precompile assets to accelerate execution
-RUN RAILS_ENV=$RAILS_ENV bin/rake assets:precompile
+#RUN RAILS_ENV=$RAILS_ENV bin/rake assets:precompile
 
 RUN chmod +x /app/bin/run.sh
 CMD /app/bin/run.sh

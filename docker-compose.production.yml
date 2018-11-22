@@ -2,12 +2,15 @@ version: '3.7'
 
 services:
   api_ubs: &ror
-#    image: ${DTR}/${SERVICE}:${RELEASE}
     image: ${SERVICE}:${RELEASE}
-    deploy:
-      replicas: ${REPLICAS}
+    ports:
+      - 3000:3000
+#    image: ${DTR}/${SERVICE}:${RELEASE}
+#    deploy:
+#      replicas: 2
 
   sidekiq:
     <<: *ror
-    deploy:
-      replicas: 1
+    ports: []
+#    deploy:
+#      replicas: 1

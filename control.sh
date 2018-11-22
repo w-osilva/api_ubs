@@ -20,15 +20,18 @@ case "${1}" in
   "build")
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
     docker-compose -f docker-compose.yml ${COMPOSE_ENV} build ${2}
-#    docker-compose -f docker-compose.yml ${COMPOSE_ENV} push
     ;;
 
   "up"|"start")
     [ -f docker-compose.${ENV}.yml ] && COMPOSE_ENV="-f docker-compose.${ENV}.yml"
-    env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} up -d
 
+    # first up mariadb and set privileges
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} up -d mariadb
     source docker/scripts/privileges.sh
     retry setPrivileges
+
+    # up stack
+    env $(cat .env | grep ^[A-Z] | xargs) docker-compose -f docker-compose.yml ${COMPOSE_ENV} up -d
     ;;
 
   "stop")
