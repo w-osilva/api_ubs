@@ -45,7 +45,8 @@ group :test do
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails', '~> 3.8'
+  gem 'database_cleaner'
   gem 'shoulda-matchers', '~> 3.1'
 end
 

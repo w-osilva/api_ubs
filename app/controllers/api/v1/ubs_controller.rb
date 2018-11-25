@@ -1,11 +1,10 @@
 class Api::V1::UbsController < ApplicationController
   def find_ubs
-    search = Ubs.search_ubs_paginated(**find_params.to_hash.symbolize_keys)
-    render json: search, status: :ok
+    render json: Ubs.search_paginated(**permited_params.to_hash.symbolize_keys)
   end
 
   private
-  def find_params
+  def permited_params
     params.permit(:query, :page, :per_page)
   end
 end

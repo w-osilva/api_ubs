@@ -19,6 +19,7 @@ class Ubs < ApplicationRecord
   # ElasticSearch
   # -------------------------------------------------------------
   include Elasticsearch::Model
+  index_name "ubs-#{Rails.env}"
 
   def as_indexed_json(options = {})
     self.as_json(
@@ -37,36 +38,40 @@ class Ubs < ApplicationRecord
     )
   end
 
-  def self.search_ubs_paginated(query: '*', page: 1, per_page: 10)
-    search = search_ubs(query).page(page).per(per_page)
-    {
-      current_page: page,
-      per_page: per_page,
-      total_records: search.results.total,
-      entries: parse_search_results(search.results)
-    }
-  end
-
-  def self.search_ubs(query)
-    __elasticsearch__.search(
+  def self.search_paginated(query: '*', page: 1, per_page: 10)
+    search = __elasticsearch__.search(
       query: {
         multi_match: {
           query: query,
           fields: ['name', 'address', 'city', 'phone', 'geocode.lat', 'geocode.long'],
         }
-      })
+      }
+    ).page(page).per(per_page)
+    {
+      current_page: page,
+      per_page: per_page,
+      total_records: search.total_count,
+      entries: parse_search_results(search)
+    }
   end
 
-  def self.parse_search_results(results)
-    results.map do |result|
-      res = result._source.deep_symbolize_keys
-      res[:geocode][:lat]                    = res[:geocode][:lat].to_f
-      res[:geocode][:long]                   = res[:geocode][:long].to_f
-      res[:scores][:size]                    = res[:scores][:size].to_i
-      res[:scores][:adaptation_for_seniors]  = res[:scores][:adaptation_for_seniors].to_i
-      res[:scores][:medical_equipment]       = res[:scores][:medical_equipment].to_i
-      res[:scores][:medicine]                = res[:scores][:medicine].to_i
-      res
+  def self.parse_search_results(search)
+    search.results.map do |result|
+      entry = result._source.deep_symbolize_keys
+      entry.slice(
+        :id, :name, :city, :phone
+      ).merge(
+         geocode: {
+           lat: entry[:geocode][:lat].to_f,
+           long: entry[:geocode][:lat].to_f,
+         },
+         scores: {
+           size: entry[:scores][:size].to_i,
+           adaptation_for_seniors: entry[:scores][:adaptation_for_seniors].to_i,
+           medical_equipment: entry[:scores][:medical_equipment].to_i,
+           medicine: entry[:scores][:medicine].to_i,
+         }
+      )
     end
   end
 
